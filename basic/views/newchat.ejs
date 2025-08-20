@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Message</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        form { margin-bottom: 20px; }
+        label { display: inline-block; width: 80px; }
+        input, textarea { width: 300px; }
+        textarea { resize: vertical; }
+        .note { color: #666; font-size: 0.9em; margin-left: 80px; }
+        .buttons { margin-top: 20px; }
+        button, a.button { padding: 5px 15px; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h3>Write your message here</h3>
+    <form method="POST" action="/chat/new">
+        <label for="from">From:</label>
+        <input type="text" id="from" name="from" required placeholder="Sender's name">
+        <br><br>
+        
+        <label for="to">To:</label>
+        <input type="text" id="to" name="to" required placeholder="Recipient's name">
+        <br><br>
+        
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" maxlength="50" rows="4" 
+                  placeholder="Type your message (max 50 chars)" required></textarea>
+        <div class="note">Max 50 characters</div>
+        <br>
+        
+        <button type="submit">Send Message</button>
+    </form>
+    
+    <a href="/chat" class="button">Back to Chat</a>
+</body>
+</html>
