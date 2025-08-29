@@ -1,19 +1,42 @@
-const express = require('express');
-const app= express();
-const mongoose=require('mongoose');
+const express = require("express");
+const app=express();
+const port=8000;
+const mongoose=require("mongoose");
+const db="mongodb://localhost:27017/travel";
+const listing=require("./model/listing");
 
+main() 
+ .then(()=>{
+    console.log("Connected to database");
+ })
+ .catch((error)=>{
+    console.log("Error in connecting to database",error);
+ });
 async function main(){
-    await mongoose.connect('mongodb://127.0.0.1:27017/trvel');
-    console.log('connected to database')
-    .then( ()=>{  
-        console.log(' connected to database :>() >>')
-    }
-    )
-    .catch((error)=>{
-        console.log('error in connecting to database')
-    })
+    await mongoose.connect(db);
+    console.log("Connected to database");
 }
 
-app.listen(8080,()=>{
- console.log('server   is running on port 8080')
-})
+app.get("/testListing", async (req, res) => {
+  let sampleListing = new Listing({
+    title: "My New Villa",
+    description: "By the beach",
+    price: 1200,
+    location: "Calangute, Goa",
+    country: "India",
+  });
+
+  await sampleListing.save();
+  console.log("sample was saved");
+  res.send("successful testing");
+});
+
+app.get("/",(req,res)=>{
+    res.send("Hello World");
+});
+
+
+
+app.listen(port,()=>{
+    console.log("Server is running on port "+port);
+});
