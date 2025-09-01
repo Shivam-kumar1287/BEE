@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const ExpressError = require('./ExpressError');
 
 // Logger middleware
 app.use((req, res, next) => {
@@ -9,80 +10,44 @@ app.use((req, res, next) => {
 });
 
 // Token verification middleware for /api routes
-//http://localhost:3000/api?token=123
- 
-app.use("/api", (req, res, next) => {
-    console.log("API Middleware executed");
-  if (req.query.token === '123') {
-    console.log("Valid token");
-    next(); // ✅ allow request to continue
-  } else {
-    return res.status(401).send('Unauthorized');
-  }
-});
-
-// Routes
-app.get('/', (req, res) => {
-  res.send('Hello World');
-});
-
-app.get('/api', (req, res) => {
-  res.send('Hello from API, token is valid ✅');
-});
-
-// 404 handler (keep this LAST)
-app.use((req, res) => {
-  res.status(404).send('404 Not Found');
-});
-
-
-
-const checktoken = (req, res, next) => {
+const checkToken = (req, res, next) => {
   let { token } = req.query;
   if (token === "123") {
     next();
   } else {
-    res.status(401).send("Unauthorized");
+    return next(new ExpressError("Unauthorized", 401));
   }
 };
 
-//syntax error 
-//error handling middleware
-// Route to intentionally throw an error
-app.get("/wrong", (req, res, next) => {
-  console.log("Error handling middleware executed");
-  try {
-    let addcs = notDefined + 5; // ❌ ReferenceError
-    res.send(addcs);
-  } catch (err) {
-    next(err); // Pass error to error handler
-  }
+// Apply token middleware to all /api routes
+app.use("/api", checkToken);
+
+// API route handler
+app.get("/api", (req, res) => {
+  res.send(`API Success! Accessed at: ${req.time}`);
 });
 
-// Error handling middleware (MUST have 4 args)
+// Example protected route
+app.get("/api/data", (req, res) => {
+  res.json({ message: "Protected data", timestamp: req.time });
+});
+
+// Error handler for ExpressError
 app.use((err, req, res, next) => {
-  console.error("Error:", err.message);
-  res.status(500).send("Something broke! 💥");
+  const { status = 500, message = "Something went wrong!" } = err;
+  res.status(status).send(message);
 });
-//second to handel error
-app.use(("/err",(req,res,next)=>{
-  console.log("Error handling middleware executed");
 
-}))
-
-// 404 handler (keep this LAST)
+// 404 handler for undefined routes
 app.use((req, res) => {
-  res.status(404).send('404 Not Found');
+  res.status(404).send("Route not found!");
 });
-
 app.listen(3000, () => {
   console.log('Server started on port 3000');
+  console.log("Test URLs:");
+  console.log("✅ http://localhost:3000/api?token=123 → API Success!");
+  console.log("✅ http://localhost:3000/api/data?token=123 → JSON data");
+  console.log("❌ http://localhost:3000/api?token=999 → Unauthorized");
+  console.log("❌ http://localhost:3000/api → Unauthorized (no token)");
+  console.log("❌ http://localhost:3000/wrong → Route not found!");
 });
-
-/*✅ Valid token → http://localhost:3000/api?token=123
-
-❌ Invalid token → http://localhost:3000/api?token=999 → Unauthorized
-
-❌ Missing token → http://localhost:3000/api → Unauthorized
-
-💥 Trigger error → http://localhost:3000/wrong → Something broke! 💥 */
