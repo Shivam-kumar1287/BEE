@@ -29,7 +29,16 @@ app.get("/api", (req, res) => {
 
 // Example protected route
 app.get("/api/data", (req, res) => {
-  res.json({ message: "Protected data", timestamp: req.time });
+  res.json({ 
+    message: "Protected data", 
+    timestamp: req.time,
+    user: "Authenticated User"
+  });
+});
+
+// Public route (no token needed)
+app.get("/", (req, res) => {
+  res.send("Welcome to the API! Use /api?token=123 to access protected routes.");
 });
 
 // Error handler for ExpressError
@@ -42,12 +51,28 @@ app.use((err, req, res, next) => {
 app.use((req, res) => {
   res.status(404).send("Route not found!");
 });
+
+app.get("/admin", (req, res, next) => {
+  // Check if user is admin (example logic)
+  const isAdmin = req.query.role === "admin";
+  
+  if (!isAdmin) {
+    // Pass error to error handler - this will skip the response send
+    return next(new ExpressError("You are not an admin!", 403));
+  }
+  
+  // If admin, show admin page
+  res.send("Welcome to Admin Dashboard!");
+});
+
 app.listen(3000, () => {
   console.log('Server started on port 3000');
   console.log("Test URLs:");
+  console.log("🌐 http://localhost:3000/ → Welcome page");
   console.log("✅ http://localhost:3000/api?token=123 → API Success!");
   console.log("✅ http://localhost:3000/api/data?token=123 → JSON data");
   console.log("❌ http://localhost:3000/api?token=999 → Unauthorized");
   console.log("❌ http://localhost:3000/api → Unauthorized (no token)");
   console.log("❌ http://localhost:3000/wrong → Route not found!");
+  console.log("❌ http://localhost:3000/admin → Forbidden (not an admin)");
 });
