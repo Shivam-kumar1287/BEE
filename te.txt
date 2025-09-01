@@ -1,0 +1,9 @@
+middleware
+next
+next as consider end of middleware
+no code write after return next() 
+example 
+app.use((req, res,next) => {
+    console.log('Second Middleware executed')
+    next()
+});
