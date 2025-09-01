@@ -65,6 +65,26 @@ app.get("/admin", (req, res, next) => {
   res.send("Welcome to Admin Dashboard!");
 });
 
+
+/*// Enhanced error handler
+app.use((error, req, res, next) => {
+  if (error instanceof ExpressError) {
+    return res.status(error.status).json({
+      error: error.message,
+      status: error.status
+    });
+  }
+  
+  // Log unexpected errors
+  console.error("Unexpected Error:", error);
+  
+  // Don't expose internal errors in production
+  const message = process.env.NODE_ENV === 'production' 
+    ? 'Something went wrong!' 
+    : error.message;
+    
+  res.status(500).json({ error: message });
+}); */
 app.listen(3000, () => {
   console.log('Server started on port 3000');
   console.log("Test URLs:");
