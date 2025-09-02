@@ -85,6 +85,25 @@ app.use((error, req, res, next) => {
     
   res.status(500).json({ error: message });
 }); */
+
+
+/*error handle use name  */
+
+const UnauthorizedError = (message, status) => {
+  const err = new Error(message);
+  err.name = "UnauthorizedError";
+  err.status = status;
+  return err;
+};
+
+// Error handling middleware (MUST have 4 args)
+app.use((err, req, res, next) => {
+  console.log("Error:", err.message);
+  if(err.name==`"UnauthorizedError"`){
+   err=UnauthorizedError("You are not authorized to access this resource",401);
+   res.status(err.status).send(err.message);
+  }
+});
 app.listen(3000, () => {
   console.log('Server started on port 3000');
   console.log("Test URLs:");
