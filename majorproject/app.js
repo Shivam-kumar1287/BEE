@@ -9,6 +9,8 @@ const wrapAsync = require ("./utils/wrapAsync.js");
 const  ExpressError  = require ("./utils/ExpressError.js");
 app.engine('ejs',ejsmate);
 
+const { listingSchema } = require ("./schema.js");
+
 app.use(methodOverride('_method'));
 app.use(express.urlencoded({extended:true}));
 app.set("view engine","ejs");
@@ -85,26 +87,11 @@ app.get("/listing/:id", async (req,res)=>{
 
 // Create route
 app.post("/listings", wrapAsync(async (req, res, next) => {
-    if(!req.body.listing) throw new ExpressError (400,"Invalid Listing Data");
-    if(!req.body.listing.title){
-        throw new ExpressError (400,"Title cannot be empty");
-    }
+    let resul= listingSchema.validate(req.body);
+    console.log(resul);
+       
     const newListing = new listing(req.body.listing);
-    if(!newListing.description){
-        throw new ExpressError (400,"Description cannot be empty");
-    }
-    if(!newListing.price || newListing.price<=0){
-        throw new ExpressError (400,"Price must be a positive number");
-    }
-    if(!newListing.location){
-        throw new ExpressError (400,"Location cannot be empty");
-    }
-    if(!newListing.country){
-        throw new ExpressError (400,"Country cannot be empty");
-    }
-    if(!newListing.image || !newListing.image.startsWith("http")){
-        throw new ExpressError (400,"Image must be a valid URL");
-    };
+ 
     await newListing.save();
     res.redirect("/listings");
 }));
