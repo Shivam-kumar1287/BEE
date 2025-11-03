@@ -1,0 +1,423 @@
+<% layout("/layouts/boilerplate")%>
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center mt-4">
+
+        <div class="col-12 col-lg-8 col-xl-6">
+
+            <!-- Message Box for Success/Failure -->
+            <div id="messageBox" class="alert d-none mb-4">
+                
+                <div class="d-flex align-items-center">
+                    <i class="fas me-3 fs-4" id="messageIcon"></i>
+                    <span id="messageText" class="fw-semibold"></span>
+                </div>
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Header Section -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body text-center py-4">
+                    <h2 class="display-6 fw-bold text-primary mb-2">Create New Listing</h2>
+                    <p class="text-muted">Fill in the details below to create a beautiful property listing</p>
+                </div>
+            </div>
+
+            <!-- Form Section -->
+            <div class="card border-0 shadow-lg">
+                <div class="card-body p-4 p-md-5">
+                    <form action="/listings" method="POST" id="listingForm">
+                        <!-- Title Field -->
+                        <div class="mb-4">
+                            <label for="title" class="form-label fw-semibold text-dark fs-5">
+                                <i class="fas fa-heading me-2 text-primary"></i>Title
+                            </label>
+                            <input type="text" 
+                                   name="listing[title]" 
+                                   id="title"
+                                   class="form-control form-control-lg border-2 default-invalid" 
+                                   placeholder="Add a Catchy Title for Your Property"
+                                   required
+                                   minlength="5">
+                            <div class="form-text text-muted">Minimum 5 characters required</div>
+                            <div class="invalid-feedback">Please enter a valid title (min 5 characters)</div>
+                        </div>
+
+                        <!-- Description Field -->
+                        <div class="mb-4">
+                            <label for="description" class="form-label fw-semibold text-dark fs-5">
+                                <i class="fas fa-align-left me-2 text-primary"></i>Description
+                            </label>
+                            <textarea type="text" 
+                                      placeholder="Describe your property's features, amenities, and unique qualities..." 
+                                      name="listing[description]"
+                                      id="description"
+                                      class="form-control border-2 default-invalid"
+                                      rows="4"
+                                      required
+                                      minlength="20"></textarea>
+                            <div class="form-text text-muted">Minimum 20 characters required</div>
+                            <div class="invalid-feedback">Please enter a detailed description (min 20 characters)</div>
+                        </div>
+
+                        <!-- Image URL Field -->
+                        <div class="mb-4">
+                            <label for="image" class="form-label fw-semibold text-dark fs-5">
+                                <i class="fas fa-image me-2 text-primary"></i>Image Link
+                            </label>
+                            <input type="url" 
+                                   placeholder="https://example.com/your-image.jpg" 
+                                   name="listing[url]" 
+                                   id="image"
+                                   class="form-control border-2 default-invalid"
+                                   required
+                                   pattern="https?://.+">
+                            <div class="form-text text-muted">Must be a valid URL starting with http:// or https://</div>
+                            <div class="invalid-feedback">Please enter a valid image URL</div>
+                        </div>
+
+                        <!-- Price and Country Row -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label for="price" class="form-label fw-semibold text-dark fs-6">
+                                    <i class="fas fa-tag me-2 text-success"></i>Price (per night)
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-2">₹</span>
+                                    <input type="number" 
+                                           name="listing[price]" 
+                                           id="price"
+                                           class="form-control border-2 default-invalid" 
+                                           placeholder="1200"
+                                           min="100"
+                                           step="100"
+                                           required>
+                                </div>
+                                <div class="form-text text-muted">Minimum price: ₹100</div>
+                                <div class="invalid-feedback">Price must be at least ₹100</div>
+                            </div>
+                           
+                            <div class="col-md-6">
+                                <label for="country" class="form-label fw-semibold text-dark fs-6">
+                                    <i class="fas fa-flag me-2 text-warning"></i>Country
+                                </label>
+                                <input type="text" 
+                                       name="listing[country]" 
+                                       id="country"
+                                       class="form-control border-2 default-invalid" 
+                                       placeholder="India"
+                                       required
+                                       minlength="2">
+                                <div class="form-text text-muted">Country where property is located</div>
+                                <div class="invalid-feedback">Please enter a valid country name</div>
+                            </div>
+                        </div>
+
+                        <!-- Location Field -->
+                        <div class="mb-4">
+                            <label for="location" class="form-label fw-semibold text-dark fs-5">
+                                <i class="fas fa-map-marker-alt me-2 text-danger"></i>Location
+                            </label>
+                            <input type="text" 
+                                   placeholder="Jaipur, Rajasthan" 
+                                   name="listing[location]" 
+                                   id="location"
+                                   class="form-control border-2 default-invalid"
+                                   required
+                                   minlength="3">
+                            <div class="form-text text-muted">City and state of your property</div>
+                            <div class="invalid-feedback">Please enter a valid location</div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <button type="reset" class="btn btn-outline-secondary btn-lg me-md-2" id="resetBtn">
+                                <i class="fas fa-redo me-2"></i>Reset
+                            </button>
+                            <button type="submit" class="btn btn-primary btn-lg px-4">
+                                <i class="fas fa-plus-circle me-2"></i>Create Listing
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Help Text -->
+            <div class="text-center mt-4">
+                <p class="text-muted small">
+                    <i class="fas fa-info-circle me-1"></i>
+                    All fields are required. Your listing will be visible to potential guests after submission.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Default state - Red border */
+    .default-invalid {
+        border-color: #dc3545 !important;
+        border-width: 2px !important;
+    }
+    
+    /* Focus state - Blue border */
+    .form-control:focus {
+        border-color: #4dabf7 !important;
+        box-shadow: 0 0 0 0.2rem rgba(77, 171, 247, 0.25) !important;
+    }
+    
+    /* Valid state - Blue border */
+    .form-control.is-valid {
+        border-color: #4dabf7 !important;
+        background-image: none;
+    }
+    
+    /* Invalid state (when typing wrong) - Red border */
+    .form-control.is-invalid {
+        border-color: #dc3545 !important;
+        background-image: none;
+    }
+    
+    /* Remove default red on focus for invalid fields */
+    .form-control.is-invalid:focus {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+    }
+    
+    /* Message Box Styles */
+    #messageBox {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        position: relative;
+        padding: 1.25rem 3rem 1.25rem 1.25rem;
+    }
+    
+    .alert-success-custom {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        border-left: 4px solid #28a745;
+        color: #155724;
+    }
+    
+    .alert-danger-custom {
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        border-left: 4px solid #dc3545;
+        color: #721c24;
+    }
+    
+    .alert-warning-custom {
+        background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+        border-left: 4px solid #ffc107;
+        color: #856404;
+    }
+    
+    .card {
+        border-radius: 15px;
+        transition: transform 0.2s ease-in-out;
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .form-label {
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+    
+    .input-group-text {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+        font-weight: 600;
+        border: 2px solid #f5576c;
+    }
+    
+    /* Smooth transitions */
+    .form-control {
+        transition: all 0.3s ease;
+    }
+    
+    /* Message box animation */
+    .alert.show {
+        animation: slideInDown 0.5s ease-out;
+    }
+    
+    @keyframes slideInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('listingForm');
+    const inputs = form.querySelectorAll('input, textarea');
+    const resetBtn = document.getElementById('resetBtn');
+    const messageBox = document.getElementById('messageBox');
+    const messageText = document.getElementById('messageText');
+    const messageIcon = document.getElementById('messageIcon');
+    
+    // Function to show message
+    function showMessage(type, message) {
+        // Remove all existing classes
+        messageBox.classList.remove('alert-success-custom', 'alert-danger-custom', 'alert-warning-custom');
+        
+        // Set styles based on type
+        switch(type) {
+            case 'success':
+                messageBox.classList.add('alert-success-custom');
+                messageIcon.className = 'fas fa-check-circle';
+                break;
+            case 'error':
+                messageBox.classList.add('alert-danger-custom');
+                messageIcon.className = 'fas fa-exclamation-circle';
+                break;
+            case 'warning':
+                messageBox.classList.add('alert-warning-custom');
+                messageIcon.className = 'fas fa-exclamation-triangle';
+                break;
+        }
+        
+        // Set message text and show
+        messageText.textContent = message;
+        messageBox.classList.remove('d-none');
+        messageBox.classList.add('show');
+        
+        // Auto-hide success messages after 5 seconds
+        if (type === 'success') {
+            setTimeout(() => {
+                hideMessage();
+            }, 5000);
+        }
+    }
+    
+    // Function to hide message
+    function hideMessage() {
+        messageBox.classList.remove('show');
+        setTimeout(() => {
+            messageBox.classList.add('d-none');
+        }, 500);
+    }
+    
+    // Remove default invalid class when user starts typing
+    function handleInput(event) {
+        const field = event.target;
+        field.classList.remove('default-invalid');
+        validateField(field);
+    }
+    
+    // Validate individual field
+    function validateField(field) {
+        const isValid = field.checkValidity();
+        const isTouched = field.value.trim() !== '';
+        
+        if (isTouched) {
+            if (isValid) {
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
+            } else {
+                field.classList.remove('is-valid');
+                field.classList.add('is-invalid');
+            }
+        } else {
+            if (!field.classList.contains('default-invalid')) {
+                field.classList.add('default-invalid');
+            }
+            field.classList.remove('is-valid', 'is-invalid');
+        }
+    }
+    
+    // Add event listeners to all inputs
+    inputs.forEach(input => {
+        input.addEventListener('input', handleInput);
+        input.addEventListener('blur', function() {
+            validateField(this);
+        });
+        input.addEventListener('focus', function() {
+            this.classList.remove('default-invalid');
+        });
+        validateField(input);
+    });
+    
+    // Reset button functionality
+    resetBtn.addEventListener('click', function() {
+        setTimeout(() => {
+            inputs.forEach(input => {
+                input.classList.remove('is-valid', 'is-invalid');
+                input.classList.add('default-invalid');
+            });
+            showMessage('warning', 'Form has been reset. All fields have been cleared.');
+        }, 100);
+    });
+    
+    // Form submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        let isFormValid = true;
+        let invalidFields = [];
+        
+        // Validate all fields
+        inputs.forEach(input => {
+            validateField(input);
+            if (!input.checkValidity()) {
+                isFormValid = false;
+                invalidFields.push(input.id);
+            }
+        });
+        
+        if (isFormValid) {
+            // Show success message
+            showMessage('success', '🎉 Listing created successfully! Redirecting to listings page...');
+            
+            // Simulate form submission (replace with actual submission)
+            setTimeout(() => {
+                form.submit(); // Remove this if you want to handle submission differently
+            }, 2000);
+            
+        } else {
+            // Show error message
+            showMessage('error', '❌ Please fix the errors in the form before submitting.');
+            
+            // Scroll to first invalid field
+            const firstInvalid = document.getElementById(invalidFields[0]);
+            if (firstInvalid) {
+                firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstInvalid.focus();
+            }
+        }
+    });
+    
+    // Close message box when close button is clicked
+    messageBox.querySelector('.btn-close').addEventListener('click', hideMessage);
+    
+    // Field-specific success messages
+    inputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            if (this.checkValidity() && this.value.trim() !== '') {
+                const fieldName = this.id.charAt(0).toUpperCase() + this.id.slice(1);
+                showMessage('success', `✓ ${fieldName} looks good!`, 2000);
+            }
+        });
+    });
+});
+</script>
